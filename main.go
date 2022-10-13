@@ -2,8 +2,10 @@ package main
 
 import (
 	"encoding/csv"
+	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/gocolly/colly"
 )
@@ -29,6 +31,20 @@ func main() {
 	)
 
 	c.OnHTML(".internship_meta", func(e *colly.HTMLElement) {
-		writer.Write([]string{})
+		writer.Write([]string{
+			e.ChildText("a"),
+			e.ChildText("span"),
+		})
 	})
+
+	// c.Visit will visit page and runs OnHTML function
+	for i := 0; i < 108; i++ {
+		fmt.Printf("scrapping page: %d\n", i)
+
+		//converting i to string with Itoa
+		c.Visit("https://internshala.com/internships/work-from-home-internships/page-" + strconv.Itoa(i))
+	}
+
+	log.Printf("Scraping complete")
+	log.Println(c)
 }
